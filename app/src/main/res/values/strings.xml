@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Renju</string>
+    <string name="logoBig">RENJU</string>
+    <string name="logoSmall">renju</string>
+    <string name="NewGameButton">New game</string>
+    <string name="Settings">Settings</string>
+    <string name="fieldSize">Field size</string>
+    <string name="NewGame">NEW</string>
+</resources>

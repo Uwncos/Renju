@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundMainColor"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/mainButton2"
+        android:layout_width="227dp"
+        android:layout_height="71dp"
+        android:layout_below="@+id/mainButton1"
+        android:layout_marginHorizontal="100sp"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/rubik"
+        android:text="@string/Settings"
+        android:textAlignment="center"
+        android:textColor="@color/backgroundMainColor"
+        android:textColorHighlight="@color/highliteTextColor"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/gameNameLogo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="145sp"
+        android:fontFamily="@font/rubik"
+        android:text="@string/logoBig"
+        android:textAlignment="center"
+        android:textColor="@color/textColor"
+        android:textSize="48sp"
+        android:typeface="normal" />
+
+    <Button
+        android:id="@+id/mainButton1"
+        android:layout_width="227dp"
+        android:layout_height="71dp"
+        android:layout_below="@+id/gameNameLogo"
+        android:layout_marginHorizontal="100sp"
+        android:layout_marginTop="100sp"
+        android:fontFamily="@font/rubik"
+        android:text="@string/NewGameButton"
+        android:textAlignment="center"
+        android:textColor="@color/backgroundMainColor"
+        android:textColorHighlight="@color/highliteTextColor"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+</RelativeLayout>
