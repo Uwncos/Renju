@@ -11,10 +11,23 @@
         android:theme="@style/Theme.Renju">
         <activity
             android:name=".GameWindow"
-            android:exported="false" />
+            android:exported="false" >
+            <intent-filter>
+                <action android:name=".GameWindow" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            </activity>
         <activity
             android:name=".SettingsWindow"
-            android:exported="false" />
+            android:exported="false" >
+            <intent-filter>
+                <action android:name=".SettingsWindow" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+    </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
