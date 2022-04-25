@@ -12,4 +12,5 @@
     <color name="textColor">#C57B0B</color>
     <color name="highliteTextColor">#F7CA87</color>
     <color name="GameBarColor">#875E22</color>
+    <color name="Air">#00FFFFFF</color>
 </resources>

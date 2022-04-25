@@ -42,6 +42,7 @@
         android:layout_marginHorizontal="100sp"
         android:layout_marginTop="100sp"
         android:fontFamily="@font/rubik"
+        android:onClick="toGameWindow"
         android:text="@string/NewGameButton"
         android:textAlignment="center"
         android:textColor="@color/backgroundMainColor"
