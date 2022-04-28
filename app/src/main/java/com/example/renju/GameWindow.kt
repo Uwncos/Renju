@@ -1,40 +1,42 @@
 package com.example.renju
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
-import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-
-//import javax.swing.text.View
-//import javax.swing.text.html.ImageView
+import java.util.*
 
 
 class GameWindow : AppCompatActivity() {
 
-
-//    private var lDisplayMetrics = resources.displayMetrics
-//    var widthPixels = lDisplayMetrics.widthPixels
-//    var heightPixels = lDisplayMetrics.heightPixels
-
-
     private val boardSize = 15
+    private var context = this
 
-
-    private var context: Context? = null
+    private var btnPlay1: Button? = null
+    private var btnPlayInGame: Button? = null
+    private var turn: TextView? = null
 
     private val ivCell = Array(boardSize) {
         arrayOfNulls<ImageView>(
             boardSize
         )
     }
-    private val drawCell = arrayOfNulls<Drawable>(4)
+
+    private val valueCell = Array(boardSize) {
+        IntArray(
+            boardSize
+        )
+    }
+
+    private var winner_play = 0
+    private var firstMove = false
+    private var xMove = 0
+    private var yMove = 0
+    private var turnPlay = 0
+
+        private val drawCell = arrayOfNulls<Drawable>(4)
 //    private val btnPlay = Button(this)
 //    private val tvTurn: TextView? = null
 
@@ -44,25 +46,77 @@ class GameWindow : AppCompatActivity() {
         //leaderCount add in bundle (https://www.youtube.com/watch?v=puj9OXs2iPM&list=PLRmiL0mct8WnodKkGLpBN0mfXIbAAX-Ux&index=9)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_window)
-        designBoardGame()
-        loadResources()
         context = this
+        setListen()
+        loadResources()
+        designBoardGame()
+
+
     }
 
+    private fun setListen() {
+        btnPlay1 = findViewById(R.id.mainButton1)
+        btnPlayInGame = findViewById(R.id.reloadButton)
+        turn = findViewById(R.id.turn)
+        turn!!.text = "Turn:"
+
+        btnPlay1!!.setOnClickListener {
+            init_game()
+            play_game()
+        }
+        btnPlayInGame!!.setOnClickListener {
+            init_game()
+            play_game()
+        }
+    }
+
+    private fun init_game() {
+        firstMove = true
+        winner_play = 0
+
+        for (i in 0 until boardSize) {
+            for (j in 0 until boardSize) {
+                ivCell[i][j]!!.setImageDrawable(drawCell[0]) //default or Empty cell
+                valueCell[i][j] = 0
+            }
+        }
+
+    }
+
+    private fun play_game() {
+        val r = Random()
+        turnPlay = r.nextInt(2) + 1
+        if (turnPlay == 1) {
+            Toast.makeText(this, "Make first move", Toast.LENGTH_SHORT).show()
+            playerTurn()
+        }
+        else {
+            Toast.makeText(this, "Computer turn", Toast.LENGTH_SHORT).show()
+            computerTurn()
+        }
+    }
+
+    private fun playerTurn() {
+
+    }
+
+    private fun computerTurn() {
+
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun loadResources() {
-        drawCell[3] = context!!.resources.getDrawable(R.drawable.cell) //background
+        drawCell[3] = context.resources.getDrawable(R.drawable.cell) //background
         //copy 2 image for 2 drawable player and bot
         drawCell[0] = null //empty cell
-        drawCell[1] = context!!.resources.getDrawable(R.drawable.black_player) //drawable for player
-        drawCell[2] = context!!.resources.getDrawable(R.drawable.white_player) //for bot
+        drawCell[1] = context.resources.getDrawable(R.drawable.black_player) //drawable for player
+        drawCell[2] = context.resources.getDrawable(R.drawable.white_player) //for bot
     }
 
-    @SuppressLint("NewApi")
     private fun designBoardGame() {
 
         val sizeofCell = (getScreenWidth() / boardSize)
-        val IpRow: LinearLayout.LayoutParams =
-            LinearLayout.LayoutParams(sizeofCell * boardSize, sizeofCell)
+        val IpRow: LinearLayout.LayoutParams = LinearLayout.LayoutParams(sizeofCell * boardSize, sizeofCell)
         val lpCell = LinearLayout.LayoutParams(sizeofCell, sizeofCell)
         val linBoardGame = findViewById<View>(R.id.linBoardGame) as LinearLayout
 
@@ -73,7 +127,7 @@ class GameWindow : AppCompatActivity() {
                 ivCell[i][j] = ImageView(context)
                 //make a cell
                 //need to set background default for cell
-                //cell has 3 status, empty(defautl),player,bot
+                //cell has 3 status, empty(default),player,bot
                 ivCell[i][j]!!.background = drawCell[3]
                 //make that for safe and clear
 //                ivCell[i][j].setOnClickListener(object : OnClickListener() {
@@ -101,14 +155,15 @@ class GameWindow : AppCompatActivity() {
 //        return dm.widthPixels.toFloat()
 //    }
 
-    fun Activity.displayMetrics(): DisplayMetrics {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics
-    }
+//    fun Activity.displayMetrics(): DisplayMetrics {
+//        val displayMetrics = DisplayMetrics()
+//        windowManager.defaultDisplay.getMetrics(displayMetrics)
+//        return displayMetrics
+//    }
 
     fun getScreenWidth(): Int {
-        return Resources.getSystem().getDisplayMetrics().widthPixels
+        val a = this.resources.displayMetrics.widthPixels
+        return a - 20
     }
 
 }
