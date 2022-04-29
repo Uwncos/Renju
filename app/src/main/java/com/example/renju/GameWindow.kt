@@ -99,7 +99,9 @@ class GameWindow : AppCompatActivity() {
     }
 
     private fun playerTurn() {
+        Log.d("tuanh", "player turn")
         turn!!.text = "Tern: You"
+        firstMove = false
         isClicked = false
     }
 
@@ -162,7 +164,7 @@ class GameWindow : AppCompatActivity() {
         var rr = 0
         var pl = turnPlay
         for (i in 0 until boardSize) {
-            rr += CheckValue(boardSize, i, -1, 0, pl)
+            rr += CheckValue(boardSize - 1, i, -1, 0, pl)
         }
         for (i in 0 until boardSize) {
             rr += CheckValue(i, boardSize - 1, 0, -1, pl)
@@ -221,7 +223,6 @@ class GameWindow : AppCompatActivity() {
             }
             return
         }
-
 
         if (turnPlay == 1) {
             turnPlay = 3 - turnPlay
@@ -357,7 +358,7 @@ class GameWindow : AppCompatActivity() {
 
 
     private fun inside(i: Int, xbelow: Int, xabove: Int): Boolean {
-        return (1 - xbelow) * (1 - xabove) <= 0
+        return (i - xbelow) * (i - xabove) <= 0
     }
 
 
