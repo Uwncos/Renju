@@ -11,7 +11,7 @@
         android:theme="@style/Theme.Renju">
         <activity
             android:name=".GameWindow"
-            android:exported="false" >
+            android:exported="true" >
             <intent-filter>
                 <action android:name=".GameWindow" />
 

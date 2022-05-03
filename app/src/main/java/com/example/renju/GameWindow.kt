@@ -2,7 +2,9 @@ package com.example.renju
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -12,12 +14,20 @@ import java.util.*
 
 class GameWindow : AppCompatActivity() {
 
+    companion object {
+        const val BEST_SCORE = "BEST_SCORE"
+    }
+
+    private var bestScore = 0
+
+
     private val boardSize = 15
     private var context = this
 
     //    private var btnPlay1: Button? = null
     private var btnPlayInGame: Button? = null
     private var turn: TextView? = null
+    private var bestScoreView: TextView? = null
 
     private val ivCell = Array(boardSize) {
         arrayOfNulls<ImageView>(
@@ -54,7 +64,11 @@ class GameWindow : AppCompatActivity() {
         loadResources()
         designBoardGame()
 
+    }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(BEST_SCORE, bestScore)
     }
 
     private fun setListen() {
@@ -208,17 +222,19 @@ class GameWindow : AppCompatActivity() {
 
     private fun makeMove() {
         ivCell[xMove][yMove]!!.setImageDrawable(drawCell[turnPlay])
+//        val dd = LayerDrawable(arrayOf(drawCell[3], drawCell[turnPlay]))
+//        ivCell[xMove][yMove]!!.background = dd
         valueCell[xMove][yMove] = turnPlay
 
         if (notEmptyCell()) {
-            Toast.makeText(this, "Draw", Toast.LENGTH_SHORT).show()
             return
         } else if (checkWinner()) {
             if (winner_play == 1) {
-                Toast.makeText(this, "Winner is Player", Toast.LENGTH_SHORT).show()
                 turn!!.text = "You Win"
+                bestScore += 1
+                bestScoreView = findViewById(R.id.bestScoreDraw)
+                bestScoreView!!.text = "$bestScore"
             } else {
-                Toast.makeText(this, "Winner is Computer", Toast.LENGTH_SHORT).show()
                 turn!!.text = "You Lose"
             }
             return
@@ -293,10 +309,9 @@ class GameWindow : AppCompatActivity() {
                 ivCell[i][j]!!.setOnClickListener {
                     if (valueCell[i][j] == 0) { //empty cell
                         if (turnPlay == 1 || !isClicked) { //turn of player
-                            Log.d("tuanh", "click to cell ")
                             isClicked = true
                             xMove = i
-                            yMove = j //i,j must be final variable
+                            yMove = j
                             makeMove()
                         }
                     }
@@ -326,7 +341,7 @@ class GameWindow : AppCompatActivity() {
             j += vy
         }
         while (true) {
-            st = st + valueCell[i][j].toString()
+            st += valueCell[i][j].toString()
             if (st.length == 5) {
                 EvalEnd(st)
                 st = st.substring(1, 5) //substring of st from index 1->5;=> delete first character
@@ -364,7 +379,7 @@ class GameWindow : AppCompatActivity() {
 
     fun getScreenWidth(): Int {
         val a = this.resources.displayMetrics.widthPixels
-        return a - 20
+        return a
     }
 
     private fun Eval(st: String, pl: Int): Int {

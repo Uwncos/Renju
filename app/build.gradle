@@ -9,7 +9,7 @@ android {
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
         applicationId "com.example.renju"
-        minSdk 26
+        minSdk 27
         targetSdk 32
         versionCode 1
         versionName "1.0"

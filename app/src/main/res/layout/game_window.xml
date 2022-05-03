@@ -10,18 +10,18 @@
     <LinearLayout
         android:id="@+id/TopInfoMenu"
         android:layout_width="match_parent"
-        android:layout_height="70sp"
+        android:layout_height="wrap_content"
         android:background="@color/GameBarColor"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/reloadButton"
             android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_height="60dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="8dp"
             android:drawableBottom="@drawable/ic_baseline_autorenew_36"
             app:cornerRadius="18dp" />
 
@@ -38,7 +38,8 @@
             android:textSize="30sp" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:freezesText="true"
+            android:id="@+id/bestScoreDraw"
             android:layout_width="120sp"
             android:layout_height="match_parent"
             android:layout_marginTop="19sp"
@@ -54,32 +55,36 @@
     <com.otaliastudios.zoom.ZoomLayout
         android:id="@+id/zoom"
         android:layout_width="match_parent"
-        android:layout_height="533dp"
-        app:hasClickableChildren="true"
-        android:layout_below="@+id/TopInfoMenu">
+        android:layout_height="500dp"
+        android:layout_below="@+id/TopInfoMenu"
+        android:layout_above="@id/turn"
+        app:hasClickableChildren="true">
 
         <LinearLayout
             android:id="@+id/linBoardGame"
             android:layout_width="wrap_content"
-            android:layout_height="482dp"
-            android:layout_marginTop="7dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:background="@color/backgroundMainColor"
             android:orientation="vertical">
 
         </LinearLayout>
 
 
-    </com.otaliastudios.zoom.ZoomLayout>
 
+
+    </com.otaliastudios.zoom.ZoomLayout>
 
     <TextView
         android:id="@+id/turn"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/zoom"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="4dp"
         android:fontFamily="@font/rubik"
-        android:text="@string/uTurn"
+        android:text=""
         android:textAlignment="center"
         android:textSize="30sp" />
+
 
 </RelativeLayout>
