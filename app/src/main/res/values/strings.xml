@@ -7,7 +7,7 @@
     <string name="fieldSize">Field size</string>
     <string name="NewGame">NEW</string>
     <string name="BestScore">Best score</string>
-    <string name="startScore">0</string>
+    <string name="startScore"></string>
     <string name="uTurn">Turn: You</string>
     <string name="compTurn">Turn: Computer</string>
 </resources>

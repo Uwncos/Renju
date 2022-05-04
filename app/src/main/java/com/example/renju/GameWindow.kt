@@ -2,23 +2,33 @@ package com.example.renju
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import java.io.*
 import java.util.*
+/*
+Best Score обнуляется каждый проигрыш, а должен лишь обновлятся на наибольший
 
+
+
+
+
+
+
+
+
+
+
+ */
 
 class GameWindow : AppCompatActivity() {
 
-    companion object {
-        const val BEST_SCORE = "BEST_SCORE"
-    }
+    private var Score = 0
 
-    private var bestScore = 0
+    private val FILE_NAME = "content.txt"
 
 
     private val boardSize = 15
@@ -27,7 +37,6 @@ class GameWindow : AppCompatActivity() {
     //    private var btnPlay1: Button? = null
     private var btnPlayInGame: Button? = null
     private var turn: TextView? = null
-    private var bestScoreView: TextView? = null
 
     private val ivCell = Array(boardSize) {
         arrayOfNulls<ImageView>(
@@ -41,7 +50,8 @@ class GameWindow : AppCompatActivity() {
         )
     }
 
-    private var winner_play = 0
+    private var winnerPlay = 0
+    private var lastWinnerPlay = 0
     private var firstMove = false
     private var xMove = 0
     private var yMove = 0
@@ -60,16 +70,23 @@ class GameWindow : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_window)
         context = this
+//        if (savedInstanceState == null) {
+//            bestScore = 0
+//        } else {
+//            bestScore = savedInstanceState.getInt(BEST_SCORE)
+//        }
+        openText()
         setListen()
         loadResources()
         designBoardGame()
 
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(BEST_SCORE, bestScore)
-    }
+//    @Override
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        outState.putInt(BEST_SCORE, bestScore)
+//    }
 
     private fun setListen() {
 //        btnPlay1 = findViewById(R.id.mainButton1)
@@ -89,7 +106,7 @@ class GameWindow : AppCompatActivity() {
 
     private fun init_game() {
         firstMove = true
-        winner_play = 0
+        winnerPlay = 0
 
         for (i in 0 until boardSize) {
             for (j in 0 until boardSize) {
@@ -136,24 +153,24 @@ class GameWindow : AppCompatActivity() {
     private val iCol = intArrayOf(-1, 0, 1, 1, 1, 0, -1, -1)
 
     private fun findComputerMove() {
-            val listX: MutableList<Int> = ArrayList()
-            val listY: MutableList<Int> = ArrayList()
-            //find empty cell can move, and we we only move two cell in range 2
-            val range = 2
-            for (i in 0 until boardSize) {
-                for (j in 0 until boardSize) if (valueCell[i][j] != 0) { //not empty
-                    for (t in 1..range) {
-                        for (k in 0..7) {
-                            val x = i + iRow[k] * t
-                            val y = j + iCol[k] * t
-                            if (inBoard(x, y) && valueCell[x][y] == 0) {
-                                listX.add(x)
-                                listY.add(y)
-                            }
+        val listX: MutableList<Int> = ArrayList()
+        val listY: MutableList<Int> = ArrayList()
+        //find empty cell can move, and we we only move two cell in range 2
+        val range = 2
+        for (i in 0 until boardSize) {
+            for (j in 0 until boardSize) if (valueCell[i][j] != 0) { //not empty
+                for (t in 1..range) {
+                    for (k in 0..7) {
+                        val x = i + iRow[k] * t
+                        val y = j + iCol[k] * t
+                        if (inBoard(x, y) && valueCell[x][y] == 0) {
+                            listX.add(x)
+                            listY.add(y)
                         }
                     }
                 }
             }
+        }
         var lx = listX[0]
         var ly = listY[0]
         //bot always find min board_position_value
@@ -222,21 +239,30 @@ class GameWindow : AppCompatActivity() {
 
     private fun makeMove() {
         ivCell[xMove][yMove]!!.setImageDrawable(drawCell[turnPlay])
-//        val dd = LayerDrawable(arrayOf(drawCell[3], drawCell[turnPlay]))
-//        ivCell[xMove][yMove]!!.background = dd
         valueCell[xMove][yMove] = turnPlay
+        val bestScoreView = findViewById<TextView>(R.id.bestScoreDraw)
+        val fin: FileInputStream? = openFileInput(FILE_NAME)
+        val bytes = ByteArray(fin!!.available())
+        fin.read(bytes)
+        val text = String(bytes)
+        var bestScore = text.toInt()
+
 
         if (notEmptyCell()) {
             return
         } else if (checkWinner()) {
-            if (winner_play == 1) {
+            if (winnerPlay == 1) {
                 turn!!.text = "You Win"
-                bestScore += 1
-                bestScoreView = findViewById(R.id.bestScoreDraw)
-                bestScoreView!!.text = "$bestScore"
+                Score += 1
+                if (Score > bestScore) {
+                    saveText(Score)
+                }
+                openText()
             } else {
                 turn!!.text = "You Lose"
+
             }
+            lastWinnerPlay = winnerPlay
             return
         }
 
@@ -250,7 +276,7 @@ class GameWindow : AppCompatActivity() {
     }
 
     private fun checkWinner(): Boolean {
-        if (winner_play != 0) return true
+        if (winnerPlay != 0) return true
 
         VectorEnd(xMove, 0, 0, 1, xMove, yMove)
         VectorEnd(0, yMove, 1, 0, xMove, yMove)
@@ -261,11 +287,10 @@ class GameWindow : AppCompatActivity() {
         }
         if (xMove <= yMove) {
             VectorEnd(xMove - yMove + boardSize - 1, boardSize - 1, -1, -1, xMove, yMove)
-        } else{
-            VectorEnd( boardSize - 1, boardSize - 1 - (xMove - yMove), -1, -1, xMove, yMove)
+        } else {
+            VectorEnd(boardSize - 1, boardSize - 1 - (xMove - yMove), -1, -1, xMove, yMove)
         }
-
-        return winner_play != 0
+        return winnerPlay != 0
     }
 
     private fun notEmptyCell(): Boolean {
@@ -282,9 +307,8 @@ class GameWindow : AppCompatActivity() {
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun loadResources() {
         drawCell[3] = context.resources.getDrawable(R.drawable.cell) //background
-        //copy 2 image for 2 drawable player and bot
         drawCell[0] = null //empty cell
-        drawCell[1] = context.resources.getDrawable(R.drawable.black_player) //drawable for player
+        drawCell[1] = context.resources.getDrawable(R.drawable.black_player) //for player
         drawCell[2] = context.resources.getDrawable(R.drawable.white_player) //for bot
     }
 
@@ -301,11 +325,7 @@ class GameWindow : AppCompatActivity() {
             //make a row
             for (j in 0 until boardSize) {
                 ivCell[i][j] = ImageView(context)
-                //make a cell
-                //need to set background default for cell
-                //cell has 3 status, empty(default),player,bot
                 ivCell[i][j]!!.background = drawCell[3]
-                //make that for safe and clear
                 ivCell[i][j]!!.setOnClickListener {
                     if (valueCell[i][j] == 0) { //empty cell
                         if (turnPlay == 1 || !isClicked) { //turn of player
@@ -322,10 +342,12 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
+    private fun lastWinner() {
+
+    }
+
     private fun VectorEnd(xx: Int, yy: Int, vx: Int, vy: Int, rx: Int, ry: Int) {
-        //this void will check the row base on vector(vx,vy) in range (rx,ry)-4*(vx,vy) -> (rx,ry)+4*(vx,vy)
-        //ok i will explain this :) hope you understand :D if not yet feel free to comment below i will help you
-        if (winner_play != 0) return
+        if (winnerPlay != 0) return
         val range = 4
         var i: Int
         var j: Int
@@ -344,16 +366,12 @@ class GameWindow : AppCompatActivity() {
             st += valueCell[i][j].toString()
             if (st.length == 5) {
                 EvalEnd(st)
-                st = st.substring(1, 5) //substring of st from index 1->5;=> delete first character
+                st = st.substring(1, 5)
             }
             i += vx
             j += vy
-            if (!inBoard(i, j) || !inside(i, xbelow, xabove) || !inside(
-                    j,
-                    ybelow,
-                    yabove
-                ) || winner_play != 0
-            ) {
+            if (!inBoard(i, j) || !inside(i, xbelow, xabove) ||
+                !inside(j, ybelow, yabove) || winnerPlay != 0) {
                 break
             }
         }
@@ -365,8 +383,12 @@ class GameWindow : AppCompatActivity() {
 
     private fun EvalEnd(st: String) {
         when (st) {
-            "11111" -> winner_play = 1
-            "22222" -> winner_play = 2
+            "11111" -> {
+                winnerPlay = 1
+            }
+            "22222" -> {
+                winnerPlay = 2
+            }
             else -> {}
         }
     }
@@ -378,8 +400,26 @@ class GameWindow : AppCompatActivity() {
 
 
     fun getScreenWidth(): Int {
-        val a = this.resources.displayMetrics.widthPixels
-        return a
+        return resources.displayMetrics.widthPixels
+    }
+
+
+    fun saveText(best_score: Int) {
+        var fos: FileOutputStream? = null
+        val text = best_score.toString()
+        fos = openFileOutput(FILE_NAME, MODE_PRIVATE)
+        fos.write(text.toByteArray())
+        fos?.close()
+    }
+
+    fun openText() {
+        val bestScoreView = findViewById<TextView>(R.id.bestScoreDraw)
+        val fin: FileInputStream? = openFileInput(FILE_NAME)
+        val bytes = ByteArray(fin!!.available())
+        fin.read(bytes)
+        val text = String(bytes)
+        bestScoreView.text = text
+        fin.close()
     }
 
     private fun Eval(st: String, pl: Int): Int {
