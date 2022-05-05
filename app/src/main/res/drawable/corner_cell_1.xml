@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:fillColor="@color/GameBarColor"
+        android:pathData="M0,0h40v40h-40z" />
+
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M20,0L20,20.4"
+        android:strokeWidth="0.8"
+        android:strokeColor="#57FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M20.4,20L0,20"
+        android:strokeWidth="0.8"
+        android:strokeColor="#57FFFFFF" />
+</vector>

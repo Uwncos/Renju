@@ -16,7 +16,7 @@ import java.util.*
 -найти уязвимость в ходе бота
 -дизайн
 -переворачивание экрана
-
+-помечять выйгравшую пятерку цветом
  */
 
 
@@ -57,7 +57,7 @@ class GameWindow : AppCompatActivity() {
 
     private var isClicked = false
 
-    private val drawCell = arrayOfNulls<Drawable>(4)
+    private val drawCell = arrayOfNulls<Drawable>(12)
 //    private val btnPlay = Button(this)
 //    private val tvTurn: TextView? = null
 
@@ -300,6 +300,14 @@ class GameWindow : AppCompatActivity() {
         drawCell[0] = null //empty cell
         drawCell[1] = context.resources.getDrawable(R.drawable.black_player) //for player
         drawCell[2] = context.resources.getDrawable(R.drawable.white_player) //for bot
+        drawCell[4] = context.resources.getDrawable(R.drawable.border_cell_1) //background
+        drawCell[5] = context.resources.getDrawable(R.drawable.border_cell_2) //background
+        drawCell[6] = context.resources.getDrawable(R.drawable.border_cell_3) //background
+        drawCell[7] = context.resources.getDrawable(R.drawable.border_cell_4) //background
+        drawCell[8] = context.resources.getDrawable(R.drawable.corner_cell_1) //background
+        drawCell[9] = context.resources.getDrawable(R.drawable.corner_cell_2) //background
+        drawCell[10] = context.resources.getDrawable(R.drawable.corner_cell_3) //background
+        drawCell[11] = context.resources.getDrawable(R.drawable.corner_cell_4) //background
     }
 
     private fun designBoardGame() {
@@ -315,7 +323,15 @@ class GameWindow : AppCompatActivity() {
             //make a row
             for (j in 0 until boardSize) {
                 ivCell[i][j] = ImageView(context)
-                ivCell[i][j]!!.background = drawCell[3]
+                if (i == 14 && j in (1..13)) ivCell[i][j]!!.background = drawCell[4]
+                else if (j == 14 && i in (1..13)) ivCell[i][j]!!.background = drawCell[5]
+                else if (i == 0 && j in (1..13)) ivCell[i][j]!!.background = drawCell[6]
+                else if (j == 0 && i in (1..13)) ivCell[i][j]!!.background = drawCell[7]
+                else if ((j == 14 && i == 14)) ivCell[i][j]!!.background = drawCell[8]
+                else if ((j == 0 && i == 14)) ivCell[i][j]!!.background = drawCell[9]
+                else if ((j == 0 && i == 0)) ivCell[i][j]!!.background = drawCell[10]
+                else if ((j == 14 && i == 0)) ivCell[i][j]!!.background = drawCell[11]
+                else ivCell[i][j]!!.background = drawCell[3]
                 ivCell[i][j]!!.setOnClickListener {
                     if (valueCell[i][j] == 0) { //empty cell
                         if (turnPlay == 1 || !isClicked) { //turn of player
@@ -330,6 +346,7 @@ class GameWindow : AppCompatActivity() {
             }
             linBoardGame.addView(linRow, IpRow)
         }
+
     }
 
 
