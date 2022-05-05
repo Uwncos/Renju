@@ -17,13 +17,13 @@
         <Button
             android:id="@+id/reloadButton"
             android:layout_width="50dp"
-            android:layout_height="60dp"
+            android:layout_height="57dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="8dp"
             android:drawableBottom="@drawable/ic_baseline_autorenew_36"
-            app:cornerRadius="18dp" />
+            app:cornerRadius="26dp" />
 
         <TextView
             android:id="@+id/bestSoreText"

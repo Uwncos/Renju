@@ -7,29 +7,25 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import org.jetbrains.annotations.NotNull
 import java.io.*
 import java.util.*
+
 /*
-Best Score обнуляется каждый проигрыш, а должен лишь обновлятся на наибольший
-
-
-
-
-
-
-
-
-
-
+СПИСОК ДЕЛ:
+-найти уязвимость в ходе бота
+-дизайн
+-переворачивание экрана
 
  */
+
+
 
 class GameWindow : AppCompatActivity() {
 
     private var Score = 0
 
     private val FILE_NAME = "content.txt"
-
 
     private val boardSize = 15
     private var context = this
@@ -49,6 +45,8 @@ class GameWindow : AppCompatActivity() {
             boardSize
         )
     }
+
+
 
     private var winnerPlay = 0
     private var lastWinnerPlay = 0
@@ -70,16 +68,12 @@ class GameWindow : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_window)
         context = this
-//        if (savedInstanceState == null) {
-//            bestScore = 0
-//        } else {
-//            bestScore = savedInstanceState.getInt(BEST_SCORE)
-//        }
         openText()
         setListen()
         loadResources()
         designBoardGame()
-
+        init_game()
+        play_game()
     }
 
 //    @Override
@@ -241,17 +235,13 @@ class GameWindow : AppCompatActivity() {
         ivCell[xMove][yMove]!!.setImageDrawable(drawCell[turnPlay])
         valueCell[xMove][yMove] = turnPlay
         val bestScoreView = findViewById<TextView>(R.id.bestScoreDraw)
-        val fin: FileInputStream? = openFileInput(FILE_NAME)
-        val bytes = ByteArray(fin!!.available())
-        fin.read(bytes)
-        val text = String(bytes)
-        var bestScore = text.toInt()
 
 
         if (notEmptyCell()) {
             return
         } else if (checkWinner()) {
             if (winnerPlay == 1) {
+                val bestScore = viewText().toInt()
                 turn!!.text = "You Win"
                 Score += 1
                 if (Score > bestScore) {
@@ -342,9 +332,6 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-    private fun lastWinner() {
-
-    }
 
     private fun VectorEnd(xx: Int, yy: Int, vx: Int, vy: Int, rx: Int, ry: Int) {
         if (winnerPlay != 0) return
@@ -404,23 +391,44 @@ class GameWindow : AppCompatActivity() {
     }
 
 
-    fun saveText(best_score: Int) {
-        var fos: FileOutputStream? = null
+    private fun saveText(best_score: Int) {
         val text = best_score.toString()
-        fos = openFileOutput(FILE_NAME, MODE_PRIVATE)
-        fos.write(text.toByteArray())
-        fos?.close()
+        try {
+            val fos = openFileOutput(FILE_NAME, MODE_PRIVATE)
+            fos.write(text.toByteArray())
+            fos.close()
+        } catch (ex: FileNotFoundException) {
+            print(ex.message)
+        }
     }
 
-    fun openText() {
+    private fun openText() {
         val bestScoreView = findViewById<TextView>(R.id.bestScoreDraw)
-        val fin: FileInputStream? = openFileInput(FILE_NAME)
-        val bytes = ByteArray(fin!!.available())
-        fin.read(bytes)
-        val text = String(bytes)
-        bestScoreView.text = text
-        fin.close()
+        try {
+            val fin = openFileInput(FILE_NAME)
+            val bytes = ByteArray(fin.available())
+            fin.read(bytes)
+            val text = String(bytes)
+            bestScoreView.text = text
+            fin.close()
+
+        } catch (ex: FileNotFoundException) {
+            print(ex.message)
+        }
     }
+
+    private fun viewText(): String {
+        var line: String
+        if (File("/data/user/0/com.example.renju/files", FILE_NAME).exists()) {
+            val fileStream = openFileInput(FILE_NAME)
+            val read = BufferedReader(InputStreamReader(fileStream))
+            line = read.readLine()
+        }
+        else line = "0"
+        Log.d("FILE:", "$line")
+        return line
+    }
+
 
     private fun Eval(st: String, pl: Int): Int {
         //this function is put score for 6 cells in a row
