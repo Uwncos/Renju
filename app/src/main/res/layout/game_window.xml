@@ -2,16 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="?backgroundColor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundMainColor"
     tools:context=".GameWindow">
 
     <LinearLayout
         android:id="@+id/TopInfoMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/GameBarColor"
+        android:background="?color"
         android:orientation="horizontal">
 
         <Button
@@ -34,20 +34,20 @@
             android:fontFamily="@font/rubik"
             android:text="@string/BestScore"
             android:textAlignment="center"
-            android:textColor="@color/highliteTextColor"
+            android:textColor="?android:textColor"
             android:textSize="30sp" />
 
         <TextView
-            android:freezesText="true"
             android:id="@+id/bestScoreDraw"
             android:layout_width="120sp"
             android:layout_height="match_parent"
             android:layout_marginTop="19sp"
             android:layout_weight="1"
             android:fontFamily="@font/rubik"
+            android:freezesText="true"
             android:text="@string/startScore"
             android:textAlignment="center"
-            android:textColor="@color/highliteTextColor"
+            android:textColor="?android:textColor"
             android:textSize="30sp" />
 
     </LinearLayout>
@@ -66,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@color/backgroundMainColor"
+            android:background="?color"
             android:orientation="vertical">
 
         </LinearLayout>
@@ -79,11 +79,11 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/GameBarColor"
+        android:background="?color"
         android:fontFamily="@font/rubik"
         android:text=""
-        android:textAlignment="textEnd"
-        android:textColor="@color/highliteTextColor"
+        android:textAlignment="center"
+        android:textColor="?android:textColor"
         android:textSize="30sp" />
 
 

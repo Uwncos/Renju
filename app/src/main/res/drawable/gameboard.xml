@@ -5,7 +5,7 @@
     android:viewportWidth="139"
     android:viewportHeight="139">
     <path
-        android:fillColor="@color/GameBarColor"
+        android:fillColor="?color"
         android:pathData="M0,0h139v139h-139z" />
     <path
         android:fillColor="#00000000"

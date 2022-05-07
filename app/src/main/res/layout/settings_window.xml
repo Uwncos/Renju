@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundMainColor"
+    android:background="@color/backgroundMainColorLight"
     tools:context=".SettingsWindow">
 
     <TextView
@@ -15,7 +15,7 @@
         android:fontFamily="@font/rubik"
         android:text="@string/Settings"
         android:textAlignment="center"
-        android:textColor="@color/textColor"
+        android:textColor="@color/RENJUcolorLight"
         android:textSize="45sp"
         android:typeface="normal" />
 

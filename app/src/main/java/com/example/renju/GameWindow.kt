@@ -68,7 +68,7 @@ class GameWindow : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_window)
         context = this
-        openText()
+//        openText()
         setListen()
         loadResources()
         designBoardGame()
@@ -247,7 +247,7 @@ class GameWindow : AppCompatActivity() {
                 if (Score > bestScore) {
                     saveText(Score)
                 }
-                openText()
+//                openText()
             } else {
                 turn!!.text = "You Lose"
 
@@ -419,20 +419,20 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-    private fun openText() {
-        val bestScoreView = findViewById<TextView>(R.id.bestScoreDraw)
-        try {
-            val fin = openFileInput(FILE_NAME)
-            val bytes = ByteArray(fin.available())
-            fin.read(bytes)
-            val text = String(bytes)
-            bestScoreView.text = text
-            fin.close()
-
-        } catch (ex: FileNotFoundException) {
-            print(ex.message)
-        }
-    }
+//    private fun openText() {
+//        val bestScoreView = findViewById<TextView>(R.id.bestScoreDraw)
+//        try {
+//            val fin = openFileInput(FILE_NAME)
+//            val bytes = ByteArray(fin.available())
+//            fin.read(bytes)
+//            val text = String(bytes)
+//            bestScoreView.text = text
+//            fin.close()
+//
+//        } catch (ex: FileNotFoundException) {
+//            print(ex.message)
+//        }
+//    }
 
     private fun viewText(): String {
         var line: String
