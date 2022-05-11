@@ -30,7 +30,6 @@ class GameWindow : AppCompatActivity() {
     private val boardSize = 15
     private var context = this
 
-    //    private var btnPlay1: Button? = null
     private var btnPlayInGame: Button? = null
     private var turn: TextView? = null
 
@@ -58,8 +57,7 @@ class GameWindow : AppCompatActivity() {
     private var isClicked = false
 
     private val drawCell = arrayOfNulls<Drawable>(12)
-//    private val btnPlay = Button(this)
-//    private val tvTurn: TextView? = null
+
 
 
     @Override
@@ -68,7 +66,6 @@ class GameWindow : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_window)
         context = this
-//        openText()
         setListen()
         loadResources()
         designBoardGame()
@@ -76,22 +73,12 @@ class GameWindow : AppCompatActivity() {
         play_game()
     }
 
-//    @Override
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putInt(BEST_SCORE, bestScore)
-//    }
 
     private fun setListen() {
-//        btnPlay1 = findViewById(R.id.mainButton1)
         btnPlayInGame = findViewById(R.id.reloadButton)
         turn = findViewById(R.id.turn)
         turn!!.text = "Turn:"
 
-//        btnPlay1!!.setOnClickListener {
-//            init_game()
-//            play_game()
-//        }
         btnPlayInGame!!.setOnClickListener {
             init_game()
             play_game()
@@ -232,10 +219,12 @@ class GameWindow : AppCompatActivity() {
 
 
     private fun makeMove() {
-        ivCell[xMove][yMove]!!.setImageDrawable(drawCell[turnPlay])
-        valueCell[xMove][yMove] = turnPlay
-        val bestScoreView = findViewById<TextView>(R.id.bestScoreDraw)
+        val currentScoreView = findViewById<TextView>(R.id.ScoreDraw)
+//        if (!checkWinner()) {
+            ivCell[xMove][yMove]!!.setImageDrawable(drawCell[turnPlay])
+            valueCell[xMove][yMove] = turnPlay
 
+//        }
 
         if (notEmptyCell()) {
             return
@@ -244,10 +233,10 @@ class GameWindow : AppCompatActivity() {
                 val bestScore = viewText().toInt()
                 turn!!.text = "You Win"
                 Score += 1
+                currentScoreView.text = Score.toString()
                 if (Score > bestScore) {
                     saveText(Score)
                 }
-//                openText()
             } else {
                 turn!!.text = "You Lose"
 
@@ -334,19 +323,19 @@ class GameWindow : AppCompatActivity() {
                 else ivCell[i][j]!!.background = drawCell[3]
                 ivCell[i][j]!!.setOnClickListener {
                     if (valueCell[i][j] == 0) { //empty cell
-                        if (turnPlay == 1 || !isClicked) { //turn of player
+                        if ((turnPlay == 1 || !isClicked) && !checkWinner()) { //turn of player
                             isClicked = true
                             xMove = i
                             yMove = j
                             makeMove()
                         }
+
                     }
                 }
                 linRow.addView(ivCell[i][j], lpCell)
             }
             linBoardGame.addView(linRow, IpRow)
         }
-
     }
 
 
@@ -419,20 +408,6 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-//    private fun openText() {
-//        val bestScoreView = findViewById<TextView>(R.id.bestScoreDraw)
-//        try {
-//            val fin = openFileInput(FILE_NAME)
-//            val bytes = ByteArray(fin.available())
-//            fin.read(bytes)
-//            val text = String(bytes)
-//            bestScoreView.text = text
-//            fin.close()
-//
-//        } catch (ex: FileNotFoundException) {
-//            print(ex.message)
-//        }
-//    }
 
     private fun viewText(): String {
         var line: String

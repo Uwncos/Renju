@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_RenjuDark)
         setContentView(R.layout.activity_main)
         openText()
     }
@@ -32,6 +33,11 @@ class MainActivity : AppCompatActivity() {
 
     fun toGameWindow(view: View) {
         val intent = Intent(this, GameWindow::class.java)
+        startActivity(intent)
+    }
+
+    fun toSettingsWindow(view: View) {
+        val intent = Intent(this, SettingsWindow::class.java)
         startActivity(intent)
     }
 

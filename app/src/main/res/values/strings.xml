@@ -9,10 +9,14 @@
     <string name="BestScore">Best score</string>
     <string name="startScore">!</string>
     <string name="uTurn">Turn: You</string>
-    <string name="U">YOU</string>
-    <string name="WON">WON</string>
-    <string name="ONLY">ONLY</string>
+    <string name="U">YOUR</string>
+    <string name="BEST">BEST</string>
+    <string name="SCORE">SCORE</string>
     <string name="bestScore">0</string>
-    <string name="TIMES">TIMES</string>
+    <string name="IS">IS</string>
+    <string name="Theme">Theme</string>
+    <string name="System">System</string>
+    <string name="Light">Light</string>
+    <string name="Dark">Dark</string>
     <string name="compTurn">Turn: Computer</string>
 </resources>

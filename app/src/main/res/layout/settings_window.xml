@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundMainColorLight"
+    android:background="?backgroundColor"
     tools:context=".SettingsWindow">
 
     <TextView
@@ -14,19 +14,64 @@
         android:layout_marginTop="145sp"
         android:fontFamily="@font/rubik"
         android:text="@string/Settings"
-        android:textAlignment="center"
-        android:textColor="@color/RENJUcolorLight"
+        android:textAlignment="textStart"
+        android:textColor="@color/u_won_only_times"
         android:textSize="45sp"
         android:typeface="normal" />
 
+
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/Theme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/gameNameLogo2"
-        android:layout_marginTop="53dp"
+        android:layout_marginTop="50dp"
         android:fontFamily="@font/rubik"
-        android:text="@string/fieldSize"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:text="@string/Theme"
+        android:textAlignment="textStart"
+        android:textColor="?colorAccent"
+        android:textSize="35sp" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Theme"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/rubik"
+        android:minHeight="50dp"
+        android:text="@string/System"
+        android:textColor="@color/u_won_only_times"
+        android:textSize="30sp"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <Switch
+        android:id="@+id/switch2"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/switch1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/rubik"
+        android:minHeight="50dp"
+        android:text="@string/Light"
+        android:textColor="@color/u_won_only_times"
+        android:textSize="30sp"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <Switch
+        android:id="@+id/switch3"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/switch2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/rubik"
+        android:minHeight="50dp"
+        android:text="@string/Dark"
+        android:textColor="@color/u_won_only_times"
+        android:textSize="30sp"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
 </RelativeLayout>
