@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="RenjuLight" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="backgroundColor">@color/backgroundMainColorLight</item>
+        <item name="colorPrimary">@color/buttonColorLight</item>
+        <item name="android:textColor">@color/inGameTextLight</item>
+        <item name="colorAccent">@color/RENJUcolorLight</item>
+        <item name="color">@color/GameBarColor</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    </style>
+    <style name="RenjuDark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/buttonColorDark</item>
+        <item name="backgroundColor">@color/backgroundMainColorDark</item>
+        <item name="android:textColor">@color/inGameTextDark</item>
+        <item name="colorAccent">@color/RENJUcolorDark</item>
+        <item name="color">@color/GameBarDark</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    </style>
+</resources>

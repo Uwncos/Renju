@@ -22,10 +22,9 @@ class MainActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
         super.onCreate(savedInstanceState)
-        setTheme(R.style.Theme_RenjuDark)
         setContentView(R.layout.activity_main)
         openText()
     }

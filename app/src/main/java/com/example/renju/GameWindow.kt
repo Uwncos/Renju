@@ -2,9 +2,11 @@ package com.example.renju
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import org.jetbrains.annotations.NotNull
@@ -62,6 +64,11 @@ class GameWindow : AppCompatActivity() {
 
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
+
+//        val window = this.window
+//        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+//        window.statusBarColor = this.resources.getColor(R.color.GameBarColor)
         //leaderCount add in bundle (https://www.youtube.com/watch?v=puj9OXs2iPM&list=PLRmiL0mct8WnodKkGLpBN0mfXIbAAX-Ux&index=9)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_window)

@@ -6,8 +6,8 @@
     <string name="Settings">Settings</string>
     <string name="fieldSize">Field size</string>
     <string name="NewGame">NEW</string>
-    <string name="BestScore">Best score</string>
-    <string name="startScore">!</string>
+    <string name="BestScore">Score</string>
+    <string name="startScore">0</string>
     <string name="uTurn">Turn: You</string>
     <string name="U">YOUR</string>
     <string name="BEST">BEST</string>

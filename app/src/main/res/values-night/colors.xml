@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="buttonColorLight">#4467B2</color>
+    <color name="backgroundMainColorLight">#43403A</color>
+    <color name="RENJUcolorLight">#F7CA87</color>
+    <color name="GameBarColor">#9C7E46</color>
+    <color name="inGameTextLight">#B1CDFF</color>
+</resources>
