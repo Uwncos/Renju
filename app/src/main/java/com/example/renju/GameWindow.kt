@@ -22,6 +22,7 @@ import java.util.*
 -дизайн
 -переворачивание экрана
 -помечять выйгравшую пятерку цветом
+-куда вставить замену меченной шайбы на обычную???
  */
 
 
@@ -60,7 +61,7 @@ class GameWindow : AppCompatActivity() {
 
     private var isClicked = false
 
-    private val drawCell = arrayOfNulls<Drawable>(12)
+    private val drawCell = arrayOfNulls<Drawable>(14)
 
 
 
@@ -158,10 +159,12 @@ class GameWindow : AppCompatActivity() {
             xMove = boardSize / 2 + boardSize % 2
             yMove = boardSize / 2 + boardSize % 2
             firstMove = false
+
             makeMove()
         } else {
             findComputerMove()
             makeMove()
+
         }
     }
 
@@ -255,11 +258,9 @@ class GameWindow : AppCompatActivity() {
 
     private fun makeMove() {
         val currentScoreView = findViewById<TextView>(R.id.ScoreDraw)
-//        if (!checkWinner()) {
-            ivCell[xMove][yMove]!!.setImageDrawable(drawCell[turnPlay])
-            valueCell[xMove][yMove] = turnPlay
+        ivCell[xMove][yMove]!!.setImageDrawable(drawCell[11 + turnPlay])
+        valueCell[xMove][yMove] = turnPlay
 
-//        }
 
         if (notEmptyCell()) {
             return
@@ -286,6 +287,7 @@ class GameWindow : AppCompatActivity() {
         } else {
             turnPlay = 3 - turnPlay
             playerTurn()
+
         }
     }
 
@@ -332,6 +334,8 @@ class GameWindow : AppCompatActivity() {
         drawCell[9] = context.resources.getDrawable(R.drawable.corner_cell_2) //background
         drawCell[10] = context.resources.getDrawable(R.drawable.corner_cell_3) //background
         drawCell[11] = context.resources.getDrawable(R.drawable.corner_cell_4) //background
+        drawCell[12] = context.resources.getDrawable(R.drawable.black_player_touch) //for player
+        drawCell[13] = context.resources.getDrawable(R.drawable.white_player_touch) //for bot
     }
 
     private fun designBoardGame() {
@@ -363,6 +367,7 @@ class GameWindow : AppCompatActivity() {
                             xMove = i
                             yMove = j
                             makeMove()
+
                         }
 
                     }

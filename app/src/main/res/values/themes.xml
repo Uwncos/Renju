@@ -6,11 +6,11 @@
         <item name="android:textColor">@color/inGameTextLight</item>
         <item name="colorAccent">@color/RENJUcolorLight</item>
         <item name="color">@color/GameBarColor</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">
-            shortEdges
-            <!-- default, shortEdges, or never -->
-        </item>
-        <item name="android:windowFullscreen">true</item>
+<!--        <item name="android:windowLayoutInDisplayCutoutMode">-->
+<!--            shortEdges-->
+<!--            &lt;!&ndash; default, shortEdges, or never &ndash;&gt;-->
+<!--        </item>-->
+<!--        <item name="android:windowFullscreen">true</item>-->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
     </style>
 </resources>

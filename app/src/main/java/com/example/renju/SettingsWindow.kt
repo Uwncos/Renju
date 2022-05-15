@@ -7,6 +7,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.CheckBox
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
@@ -43,6 +44,10 @@ class SettingsWindow : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val window = this.window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = this.resources.getColor(R.color.backgroundMainColorLight)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_window)
         Log.d("new", "OnCreare starts")
