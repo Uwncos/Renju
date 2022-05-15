@@ -2,16 +2,18 @@ package com.example.renju
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import org.jetbrains.annotations.NotNull
-import java.io.*
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.InputStreamReader
 import java.util.*
+
 
 /*
 СПИСОК ДЕЛ:
@@ -29,25 +31,24 @@ class GameWindow : AppCompatActivity() {
 
     private val FILE_NAME = "content.txt"
 
-    private val boardSize = 15
+    var boardSize = 15
+
     private var context = this
 
     private var btnPlayInGame: Button? = null
     private var turn: TextView? = null
 
-    private val ivCell = Array(boardSize) {
+    private var ivCell = Array(boardSize) {
         arrayOfNulls<ImageView>(
             boardSize
         )
     }
 
-    private val valueCell = Array(boardSize) {
+    private var valueCell = Array(boardSize) {
         IntArray(
             boardSize
         )
     }
-
-
 
     private var winnerPlay = 0
     private var lastWinnerPlay = 0
@@ -75,11 +76,36 @@ class GameWindow : AppCompatActivity() {
         context = this
         setListen()
         loadResources()
+        boardSize = getDefaults()
+        valueCell = Array(boardSize) {
+            IntArray(
+                boardSize
+            )
+        }
+        ivCell = Array(boardSize) {
+            arrayOfNulls<ImageView>(
+                boardSize
+            )
+        }
+        Log.d("boardsize", "$boardSize")
         designBoardGame()
         init_game()
         play_game()
     }
 
+
+
+
+    fun getDefaults(): Int {
+        val size: Int
+        val shared = getSharedPreferences("size_key", MODE_PRIVATE)
+        if (shared == null) {
+            size = 15
+        } else {
+            size = shared.getString("value", "")!!.toInt()
+        }
+        return size
+    }
 
     private fun setListen() {
         btnPlayInGame = findViewById(R.id.reloadButton)
@@ -127,8 +153,8 @@ class GameWindow : AppCompatActivity() {
     private fun computerTurn() {
         turn!!.text = "Tern: Computer"
         if (firstMove) { //center
-            xMove = 7
-            yMove = 7
+            xMove = boardSize / 2 + boardSize % 2
+            yMove = boardSize / 2 + boardSize % 2
             firstMove = false
             makeMove()
         } else {
@@ -319,14 +345,14 @@ class GameWindow : AppCompatActivity() {
             //make a row
             for (j in 0 until boardSize) {
                 ivCell[i][j] = ImageView(context)
-                if (i == 14 && j in (1..13)) ivCell[i][j]!!.background = drawCell[4]
-                else if (j == 14 && i in (1..13)) ivCell[i][j]!!.background = drawCell[5]
-                else if (i == 0 && j in (1..13)) ivCell[i][j]!!.background = drawCell[6]
-                else if (j == 0 && i in (1..13)) ivCell[i][j]!!.background = drawCell[7]
-                else if ((j == 14 && i == 14)) ivCell[i][j]!!.background = drawCell[8]
-                else if ((j == 0 && i == 14)) ivCell[i][j]!!.background = drawCell[9]
+                if (i == boardSize - 1 && j in (1..boardSize - 2)) ivCell[i][j]!!.background = drawCell[4]
+                else if (j == boardSize - 1 && i in (1..boardSize - 2)) ivCell[i][j]!!.background = drawCell[5]
+                else if (i == 0 && j in (1..boardSize - 2)) ivCell[i][j]!!.background = drawCell[6]
+                else if (j == 0 && i in (1..boardSize - 2)) ivCell[i][j]!!.background = drawCell[7]
+                else if ((j == boardSize - 1 && i == boardSize - 1)) ivCell[i][j]!!.background = drawCell[8]
+                else if ((j == 0 && i == boardSize - 1)) ivCell[i][j]!!.background = drawCell[9]
                 else if ((j == 0 && i == 0)) ivCell[i][j]!!.background = drawCell[10]
-                else if ((j == 14 && i == 0)) ivCell[i][j]!!.background = drawCell[11]
+                else if ((j == boardSize - 1 && i == 0)) ivCell[i][j]!!.background = drawCell[11]
                 else ivCell[i][j]!!.background = drawCell[3]
                 ivCell[i][j]!!.setOnClickListener {
                     if (valueCell[i][j] == 0) { //empty cell
@@ -491,6 +517,5 @@ class GameWindow : AppCompatActivity() {
         }
         return 0
     }
-
 
 }

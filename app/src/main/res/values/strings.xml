@@ -6,6 +6,9 @@
     <string name="Settings">Settings</string>
     <string name="fieldSize">Field size</string>
     <string name="NewGame">NEW</string>
+    <string name="x19">19 x 19</string>
+    <string name="largerBoard">Board size</string>
+    <string name="Description">Turn it on for larger board</string>
     <string name="BestScore">Score</string>
     <string name="startScore">0</string>
     <string name="uTurn">Turn: You</string>
