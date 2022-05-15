@@ -19,7 +19,7 @@
         android:onClick="toSettingsWindow"
         android:text="@string/Settings"
         android:textAlignment="center"
-        android:textColor="@color/backgroundMainColorLight"
+        android:textColor="@color/buttonsMain"
         android:textSize="17sp"
         android:textStyle="bold"
         app:cornerRadius="27dp" />
@@ -127,7 +127,7 @@
         android:onClick="toGameWindow"
         android:text="@string/NewGameButton"
         android:textAlignment="center"
-        android:textColor="@color/backgroundMainColorLight"
+        android:textColor="@color/buttonsMain"
         android:textColorHighlight="@color/inGameTextLight"
         android:textSize="17sp"
         android:textStyle="bold"

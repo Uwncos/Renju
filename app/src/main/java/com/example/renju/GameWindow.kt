@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import java.io.BufferedReader
@@ -66,10 +67,10 @@ class GameWindow : AppCompatActivity() {
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
 
-//        val window = this.window
-//        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-//        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-//        window.statusBarColor = this.resources.getColor(R.color.GameBarColor)
+        val window = this.window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = this.resources.getColor(R.color.GameBarColor)
         //leaderCount add in bundle (https://www.youtube.com/watch?v=puj9OXs2iPM&list=PLRmiL0mct8WnodKkGLpBN0mfXIbAAX-Ux&index=9)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_window)
@@ -77,6 +78,7 @@ class GameWindow : AppCompatActivity() {
         setListen()
         loadResources()
         boardSize = getDefaults()
+        Log.d("boardSize", "$boardSize")
         valueCell = Array(boardSize) {
             IntArray(
                 boardSize

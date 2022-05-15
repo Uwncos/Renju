@@ -5,4 +5,5 @@
     <color name="RENJUcolorLight">#F7CA87</color>
     <color name="GameBarColor">#9C7E46</color>
     <color name="inGameTextLight">#B1CDFF</color>
+    <color name="buttonsMain">#FFCF6D</color>
 </resources>

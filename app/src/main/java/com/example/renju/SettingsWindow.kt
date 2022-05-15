@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.widget.CheckBox
@@ -51,6 +50,14 @@ class SettingsWindow : AppCompatActivity() {
         buttonToSystem = findViewById(R.id.buttonToSystem)
         buttonToLight = findViewById(R.id.buttonToLight)
         buttonToDark = findViewById(R.id.buttonToDark)
+        checkBox = findViewById(R.id.checkBox)
+        val ff = getSharedPreferences("check", MODE_PRIVATE)
+        val g = getCheck()
+        Log.d("isChecked", g)
+        if (getCheck() == "true") checkBox.isChecked = true
+        else if (getCheck() == "false") checkBox.isChecked = false
+        else checkBox.isChecked = false
+
         if (savedInstanceState == null) {
             buttonToSystem.background = this.resources.getDrawable(R.drawable.button_no_border)
             buttonToLight.background = this.resources.getDrawable(R.drawable.button_no_border)
@@ -64,6 +71,9 @@ class SettingsWindow : AppCompatActivity() {
             buttonToDark.background = this.resources.getDrawable(p3)
         }
         setBoardSize()
+        val shared = getSharedPreferences("size_key", MODE_PRIVATE)
+        val a = shared.getString("value", "")!!.toInt()
+        Log.d("boardSize", "$a")
 //        init()
 
 //        val myIntent = Intent()
@@ -73,12 +83,24 @@ class SettingsWindow : AppCompatActivity() {
 
     private fun saveSize(size: String) {
 
-//        val shared = getSharedPreferences("size_key", MODE_PRIVATE)
-        val shared = PreferenceManager
-            .getDefaultSharedPreferences(this)
+        val shared = getSharedPreferences("size_key", MODE_PRIVATE)
+//        val shared = PreferenceManager
+//            .getDefaultSharedPreferences(this)
         val edit = shared.edit()
         edit.putString("value", size)
         edit.apply()
+    }
+
+    fun getCheck(): String {
+        val isChecked: String
+        val sharedCheck = getSharedPreferences("check", MODE_PRIVATE)
+        if (sharedCheck == null) {
+            isChecked = "false"
+        } else {
+            isChecked = sharedCheck.getString("isChecked", "")!!
+        }
+        Log.d("isChecked", isChecked)
+        return isChecked
     }
 
 
@@ -131,16 +153,21 @@ class SettingsWindow : AppCompatActivity() {
         recreate()
     }
 
-    fun setBoardSize() {
+    private fun setBoardSize() {
+        val sharedCheck = getSharedPreferences("check", MODE_PRIVATE)
+        val edit = sharedCheck.edit()
         checkBox = findViewById(R.id.checkBox)
         checkBox.setOnCheckedChangeListener{ buttonView, isChecked ->
             if (isChecked){
+                edit.putString("isChecked", "true")
                 size = 19
                 saveSize(size.toString())
             } else{
+                edit.putString("isChecked", "false")
                 size = 15
                 saveSize(size.toString())
             }
+            edit.apply()
         }
     }
 
