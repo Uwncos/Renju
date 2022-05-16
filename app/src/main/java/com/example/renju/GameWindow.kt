@@ -3,7 +3,6 @@ package com.example.renju
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -14,6 +13,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.util.*
+import kotlin.properties.Delegates.notNull
 
 
 /*
@@ -22,7 +22,7 @@ import java.util.*
 -дизайн
 -переворачивание экрана
 -помечять выйгравшую пятерку цветом
--куда вставить замену меченной шайбы на обычную???
+-показывать лучший счет при создагии activity MainActivity
  */
 
 
@@ -57,12 +57,12 @@ class GameWindow : AppCompatActivity() {
     private var firstMove = false
     private var xMove = 0
     private var yMove = 0
+    private var xMove0 = -1
     private var turnPlay = 0
 
     private var isClicked = false
 
     private val drawCell = arrayOfNulls<Drawable>(14)
-
 
 
     @Override
@@ -97,8 +97,6 @@ class GameWindow : AppCompatActivity() {
     }
 
 
-
-
     fun getDefaults(): Int {
         val size: Int
         val shared = getSharedPreferences("size_key", MODE_PRIVATE)
@@ -116,6 +114,9 @@ class GameWindow : AppCompatActivity() {
         turn!!.text = "Turn:"
 
         btnPlayInGame!!.setOnClickListener {
+            xMove = 0
+            yMove = 0
+            xMove0 = -1
             init_game()
             play_game()
         }
@@ -138,16 +139,13 @@ class GameWindow : AppCompatActivity() {
         val r = Random()
         turnPlay = r.nextInt(2) + 1
         if (turnPlay == 1) {
-            Toast.makeText(this, "Make first move", Toast.LENGTH_SHORT).show()
             playerTurn()
         } else {
-            Toast.makeText(this, "Computer turn", Toast.LENGTH_SHORT).show()
             computerTurn()
         }
     }
 
     private fun playerTurn() {
-        Log.d("tuanh", "player turn")
         turn!!.text = "Tern: You"
         firstMove = false
         isClicked = false
@@ -159,9 +157,9 @@ class GameWindow : AppCompatActivity() {
             xMove = boardSize / 2 + boardSize % 2
             yMove = boardSize / 2 + boardSize % 2
             firstMove = false
-
             makeMove()
         } else {
+
             findComputerMove()
             makeMove()
 
@@ -212,7 +210,7 @@ class GameWindow : AppCompatActivity() {
 
     private fun value_Position(): Int {
         var rr = 0
-        var pl = turnPlay
+        val pl = turnPlay
         for (i in 0 until boardSize) {
             rr += CheckValue(boardSize - 1, i, -1, 0, pl)
         }
@@ -255,10 +253,23 @@ class GameWindow : AppCompatActivity() {
         return rr
     }
 
-
     private fun makeMove() {
         val currentScoreView = findViewById<TextView>(R.id.ScoreDraw)
-        ivCell[xMove][yMove]!!.setImageDrawable(drawCell[11 + turnPlay])
+
+//        if (!firstMove) {
+//            if (turnPlay == 1) {
+//                ivCell[xMoveLast][yMoveLast]!!.setImageDrawable(drawCell[2])
+//            }
+//        }
+        if (turnPlay == 1) {
+            ivCell[xMove][yMove]!!.setImageDrawable(drawCell[1])
+        } else if (turnPlay == 2 && xMove0 != -1) {
+            ivCell[xMove][yMove]!!.setImageDrawable(drawCell[11 + turnPlay])
+        } else if (xMove0 == -1) {
+            ivCell[xMove][yMove]!!.setImageDrawable(drawCell[2])
+        }
+
+
         valueCell[xMove][yMove] = turnPlay
 
 
@@ -274,6 +285,8 @@ class GameWindow : AppCompatActivity() {
                     saveText(Score)
                 }
             } else {
+                Score = 0
+                currentScoreView.text = Score.toString()
                 turn!!.text = "You Lose"
 
             }
@@ -351,11 +364,14 @@ class GameWindow : AppCompatActivity() {
             //make a row
             for (j in 0 until boardSize) {
                 ivCell[i][j] = ImageView(context)
-                if (i == boardSize - 1 && j in (1..boardSize - 2)) ivCell[i][j]!!.background = drawCell[4]
-                else if (j == boardSize - 1 && i in (1..boardSize - 2)) ivCell[i][j]!!.background = drawCell[5]
+                if (i == boardSize - 1 && j in (1..boardSize - 2)) ivCell[i][j]!!.background =
+                    drawCell[4]
+                else if (j == boardSize - 1 && i in (1..boardSize - 2)) ivCell[i][j]!!.background =
+                    drawCell[5]
                 else if (i == 0 && j in (1..boardSize - 2)) ivCell[i][j]!!.background = drawCell[6]
                 else if (j == 0 && i in (1..boardSize - 2)) ivCell[i][j]!!.background = drawCell[7]
-                else if ((j == boardSize - 1 && i == boardSize - 1)) ivCell[i][j]!!.background = drawCell[8]
+                else if ((j == boardSize - 1 && i == boardSize - 1)) ivCell[i][j]!!.background =
+                    drawCell[8]
                 else if ((j == 0 && i == boardSize - 1)) ivCell[i][j]!!.background = drawCell[9]
                 else if ((j == 0 && i == 0)) ivCell[i][j]!!.background = drawCell[10]
                 else if ((j == boardSize - 1 && i == 0)) ivCell[i][j]!!.background = drawCell[11]
@@ -364,8 +380,15 @@ class GameWindow : AppCompatActivity() {
                     if (valueCell[i][j] == 0) { //empty cell
                         if ((turnPlay == 1 || !isClicked) && !checkWinner()) { //turn of player
                             isClicked = true
+//                            xMoveLast = xMove
+//                            yMoveLast = yMove
+                            if (xMove0 != -1) {
+                                ivCell[xMove][yMove]!!.setImageDrawable(drawCell[2])
+                            }
                             xMove = i
                             yMove = j
+                            xMove0 = xMove
+                            Log.d("xy", "$xMove")
                             makeMove()
 
                         }
@@ -404,7 +427,8 @@ class GameWindow : AppCompatActivity() {
             i += vx
             j += vy
             if (!inBoard(i, j) || !inside(i, xbelow, xabove) ||
-                !inside(j, ybelow, yabove) || winnerPlay != 0) {
+                !inside(j, ybelow, yabove) || winnerPlay != 0
+            ) {
                 break
             }
         }
@@ -426,16 +450,13 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-
     private fun inside(i: Int, xbelow: Int, xabove: Int): Boolean {
         return (i - xbelow) * (i - xabove) <= 0
     }
 
-
-    fun getScreenWidth(): Int {
+    private fun getScreenWidth(): Int {
         return resources.displayMetrics.widthPixels
     }
-
 
     private fun saveText(best_score: Int) {
         val text = best_score.toString()
@@ -448,19 +469,15 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-
     private fun viewText(): String {
         var line: String
         if (File("/data/user/0/com.example.renju/files", FILE_NAME).exists()) {
             val fileStream = openFileInput(FILE_NAME)
             val read = BufferedReader(InputStreamReader(fileStream))
             line = read.readLine()
-        }
-        else line = "0"
-        Log.d("FILE:", "$line")
+        } else line = "0"
         return line
     }
-
 
     private fun Eval(st: String, pl: Int): Int {
         //this function is put score for 6 cells in a row
@@ -476,53 +493,61 @@ class GameWindow : AppCompatActivity() {
             b2 = 2
         }
         when (st) {
+
+
             "111110" -> return b1 * 100000000
             "011111" -> return b1 * 100000000
             "211111" -> return b1 * 100000000
             "111112" -> return b1 * 100000000
             "011110" -> return b1 * 10000000
-            "101110" -> return b1 * 1002
-            "011101" -> return b1 * 1002
-            "011112" -> return b1 * 1000
-            "011100" -> return b1 * 102
-            "001110" -> return b1 * 102
-            "210111" -> return b1 * 100
-            "211110" -> return b1 * 100
-            "211011" -> return b1 * 100
-            "211101" -> return b1 * 100
-            "010100" -> return b1 * 10
-            "011000" -> return b1 * 10
-            "001100" -> return b1 * 10
-            "000110" -> return b1 * 10
-            "211000" -> return b1 * 1
-            "201100" -> return b1 * 1
-            "200110" -> return b1 * 1
-            "200011" -> return b1 * 1
+            "101110" -> return b1 * 1002                //1002
+            "011101" -> return b1 * 1002                //1002
+            "011112" -> return b1 * 100000                //1000
+            "011100" -> return b1 * 102                //102
+            "001110" -> return b1 * 102                //102
+            "210111" -> return b1 * 100                //100
+            "011011" -> return b1 * 100
+            "110110" -> return b1 * 100
+            "211110" -> return b1 * 1                //100
+            "211011" -> return b1 * 100                //100
+            "211101" -> return b1 * 100                //100
+            "010100" -> return b1 * 10                //10
+            "011000" -> return b1 * 10                //10
+            "001100" -> return b1 * 10                //10
+            "000110" -> return b1 * 10                //10
+            "211000" -> return b1 * 1                //1
+            "201100" -> return b1 * 1                //1
+            "200110" -> return b1 * 1                //1
+            "200011" -> return b1 * 1                //1
+
+
             "222220" -> return b2 * -100000000
             "022222" -> return b2 * -100000000
             "122222" -> return b2 * -100000000
             "222221" -> return b2 * -100000000
             "022220" -> return b2 * -10000000
-            "202220" -> return b2 * -1002
-            "022202" -> return b2 * -1002
-            "022221" -> return b2 * -1000
-            "022200" -> return b2 * -102
-            "002220" -> return b2 * -102
-            "120222" -> return b2 * -100
-            "122220" -> return b2 * -100
-            "122022" -> return b2 * -100
-            "122202" -> return b2 * -100
-            "020200" -> return b2 * -10
-            "022000" -> return b2 * -10
-            "002200" -> return b2 * -10
-            "000220" -> return b2 * -10
-            "122000" -> return b2 * -1
-            "102200" -> return b2 * -1
-            "100220" -> return b2 * -1
-            "100022" -> return b2 * -1
+            "202220" -> return b2 * -1002                //-1002
+            "022202" -> return b2 * -1002                //-1002
+            "022221" -> return b2 * -1000                //-1000
+            "022200" -> return b2 * -102                //-102
+            "002220" -> return b2 * -102                //-102
+            "120222" -> return b2 * -100                //-100
+            "022022" -> return b2 * -100
+            "220220" -> return b2 * -100
+            "122220" -> return b2 * -100                //-100
+            "122022" -> return b2 * -100                //-100
+            "122202" -> return b2 * -100                //-100
+            "020200" -> return b2 * -10                //-10
+            "022000" -> return b2 * -10                //-10
+            "002200" -> return b2 * -10                //-10
+            "000220" -> return b2 * -10                //-10
+            "122000" -> return b2 * -1                //-1
+            "102200" -> return b2 * -1                //-1
+            "100220" -> return b2 * -1                //-1
+            "100022" -> return b2 * -1                //-1
+
             else -> {}
         }
         return 0
     }
-
 }
