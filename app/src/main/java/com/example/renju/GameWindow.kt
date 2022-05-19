@@ -8,12 +8,12 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.util.*
-import kotlin.properties.Delegates.notNull
 
 
 /*
@@ -23,6 +23,11 @@ import kotlin.properties.Delegates.notNull
 -переворачивание экрана
 -помечять выйгравшую пятерку цветом
 -показывать лучший счет при создагии activity MainActivity
+
+Тестируемость кода:
+  -функции с return
+  -много функций!
+  -убрать неявные входы и выходы(глобальные переменные)
  */
 
 
@@ -35,7 +40,7 @@ class GameWindow : AppCompatActivity() {
 
     var boardSize = 15
 
-    private var context = this
+    private var `this` = this
 
     private var btnPlayInGame: Button? = null
     private var turn: TextView? = null
@@ -71,11 +76,12 @@ class GameWindow : AppCompatActivity() {
         val window = this.window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.statusBarColor = this.resources.getColor(R.color.GameBarColor)
+//        window.clearFlags(WindowManager.LayoutParams.TYPE_STATUS_BAR)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.GameBarColor)
         //leaderCount add in bundle (https://www.youtube.com/watch?v=puj9OXs2iPM&list=PLRmiL0mct8WnodKkGLpBN0mfXIbAAX-Ux&index=9)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_window)
-        context = this
+        `this` = this
         setListen()
         loadResources()
         boardSize = getDefaults()
@@ -208,33 +214,33 @@ class GameWindow : AppCompatActivity() {
         yMove = ly
     }
 
-    private fun value_Position(): Int {
+    fun value_Position(): Int {
         var rr = 0
         val pl = turnPlay
         for (i in 0 until boardSize) {
-            rr += CheckValue(boardSize - 1, i, -1, 0, pl)
+            rr += checkValue(boardSize - 1, i, -1, 0, pl)
         }
         for (i in 0 until boardSize) {
-            rr += CheckValue(i, boardSize - 1, 0, -1, pl)
+            rr += checkValue(i, boardSize - 1, 0, -1, pl)
         }
         //cross right to left
         for (i in boardSize - 1 downTo 0) {
-            rr += CheckValue(i, boardSize - 1, -1, -1, pl)
+            rr += checkValue(i, boardSize - 1, -1, -1, pl)
         }
         for (i in boardSize - 2 downTo 0) {
-            rr += CheckValue(boardSize - 1, i, -1, -1, pl)
+            rr += checkValue(boardSize - 1, i, -1, -1, pl)
         }
         //cross left to right
         for (i in boardSize - 1 downTo 0) {
-            rr += CheckValue(i, 0, -1, 1, pl)
+            rr += checkValue(i, 0, -1, 1, pl)
         }
         for (i in boardSize - 1 downTo 1) {
-            rr += CheckValue(boardSize - 1, i, -1, 1, pl)
+            rr += checkValue(boardSize - 1, i, -1, 1, pl)
         }
         return rr
     }
 
-    private fun CheckValue(xd: Int, yd: Int, vx: Int, vy: Int, pl: Int): Int {
+    fun checkValue(xd: Int, yd: Int, vx: Int, vy: Int, pl: Int): Int {
         var i: Int = xd
         var j: Int = yd
         var rr = 0
@@ -304,7 +310,7 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-    private fun checkWinner(): Boolean {
+    fun checkWinner(): Boolean {
         if (winnerPlay != 0) return true
 
         VectorEnd(xMove, 0, 0, 1, xMove, yMove)
@@ -322,7 +328,7 @@ class GameWindow : AppCompatActivity() {
         return winnerPlay != 0
     }
 
-    private fun notEmptyCell(): Boolean {
+    fun notEmptyCell(): Boolean {
         for (i in 0 until boardSize) {
             for (j in 0 until boardSize) {
                 if (valueCell[i][j] == 0) {
@@ -335,20 +341,20 @@ class GameWindow : AppCompatActivity() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun loadResources() {
-        drawCell[3] = context.resources.getDrawable(R.drawable.cell) //background
         drawCell[0] = null //empty cell
-        drawCell[1] = context.resources.getDrawable(R.drawable.black_player) //for player
-        drawCell[2] = context.resources.getDrawable(R.drawable.white_player) //for bot
-        drawCell[4] = context.resources.getDrawable(R.drawable.border_cell_1) //background
-        drawCell[5] = context.resources.getDrawable(R.drawable.border_cell_2) //background
-        drawCell[6] = context.resources.getDrawable(R.drawable.border_cell_3) //background
-        drawCell[7] = context.resources.getDrawable(R.drawable.border_cell_4) //background
-        drawCell[8] = context.resources.getDrawable(R.drawable.corner_cell_1) //background
-        drawCell[9] = context.resources.getDrawable(R.drawable.corner_cell_2) //background
-        drawCell[10] = context.resources.getDrawable(R.drawable.corner_cell_3) //background
-        drawCell[11] = context.resources.getDrawable(R.drawable.corner_cell_4) //background
-        drawCell[12] = context.resources.getDrawable(R.drawable.black_player_touch) //for player
-        drawCell[13] = context.resources.getDrawable(R.drawable.white_player_touch) //for bot
+        drawCell[1] = ContextCompat.getDrawable(this, R.drawable.black_player) //for player
+        drawCell[2] = ContextCompat.getDrawable(this, R.drawable.white_player) //for bot
+        drawCell[3] = ContextCompat.getDrawable(this, R.drawable.cell) //background
+        drawCell[4] = ContextCompat.getDrawable(this, R.drawable.border_cell_1) //background
+        drawCell[5] = ContextCompat.getDrawable(this, R.drawable.border_cell_2) //background
+        drawCell[6] = ContextCompat.getDrawable(this, R.drawable.border_cell_3) //background
+        drawCell[7] = ContextCompat.getDrawable(this, R.drawable.border_cell_4) //background
+        drawCell[8] = ContextCompat.getDrawable(this, R.drawable.corner_cell_1) //background
+        drawCell[9] = ContextCompat.getDrawable(this, R.drawable.corner_cell_2) //background
+        drawCell[10] = ContextCompat.getDrawable(this, R.drawable.corner_cell_3) //background
+        drawCell[11] = ContextCompat.getDrawable(this, R.drawable.corner_cell_4) //background
+        drawCell[12] = ContextCompat.getDrawable(this, R.drawable.black_player_touch) //for player
+        drawCell[13] = ContextCompat.getDrawable(this, R.drawable.white_player_touch) //for bot
     }
 
     private fun designBoardGame() {
@@ -360,10 +366,10 @@ class GameWindow : AppCompatActivity() {
         val linBoardGame = findViewById<View>(R.id.linBoardGame) as LinearLayout
 
         for (i in 0 until boardSize) {
-            val linRow = LinearLayout(context)
+            val linRow = LinearLayout(`this`)
             //make a row
             for (j in 0 until boardSize) {
-                ivCell[i][j] = ImageView(context)
+                ivCell[i][j] = ImageView(`this`)
                 if (i == boardSize - 1 && j in (1..boardSize - 2)) ivCell[i][j]!!.background =
                     drawCell[4]
                 else if (j == boardSize - 1 && i in (1..boardSize - 2)) ivCell[i][j]!!.background =
@@ -380,8 +386,6 @@ class GameWindow : AppCompatActivity() {
                     if (valueCell[i][j] == 0) { //empty cell
                         if ((turnPlay == 1 || !isClicked) && !checkWinner()) { //turn of player
                             isClicked = true
-//                            xMoveLast = xMove
-//                            yMoveLast = yMove
                             if (xMove0 != -1) {
                                 ivCell[xMove][yMove]!!.setImageDrawable(drawCell[2])
                             }
@@ -434,7 +438,7 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-    private fun inBoard(i: Int, j: Int): Boolean {
+    fun inBoard(i: Int, j: Int): Boolean {
         return !(i < 0 || i > boardSize - 1 || j < 0 || j > boardSize - 1)
     }
 
@@ -450,7 +454,7 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-    private fun inside(i: Int, xbelow: Int, xabove: Int): Boolean {
+    fun inside(i: Int, xbelow: Int, xabove: Int): Boolean {
         return (i - xbelow) * (i - xabove) <= 0
     }
 
@@ -469,8 +473,8 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-    private fun viewText(): String {
-        var line: String
+    fun viewText(): String {
+        val line: String
         if (File("/data/user/0/com.example.renju/files", FILE_NAME).exists()) {
             val fileStream = openFileInput(FILE_NAME)
             val read = BufferedReader(InputStreamReader(fileStream))
@@ -479,7 +483,7 @@ class GameWindow : AppCompatActivity() {
         return line
     }
 
-    private fun Eval(st: String, pl: Int): Int {
+    fun Eval(st: String, pl: Int): Int {
         //this function is put score for 6 cells in a row
         //pl is player turn => you will get a bonus point if it's your turn
         //I will show you and explain how i can make it and what it mean in part improve bot move
