@@ -22,4 +22,8 @@
     <string name="Light">Light</string>
     <string name="Dark">Dark</string>
     <string name="compTurn">Turn: Computer</string>
+    <string name="YourTern">Make move</string>
+    <string name="NotYourTern">Wait</string>
+    <string name="YouWin">You Win</string>
+    <string name="YouLose">You Lose</string>
 </resources>

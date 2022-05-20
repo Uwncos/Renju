@@ -1,7 +1,8 @@
 package com.example.renju
 
-import org.junit.Test
-import org.junit.Assert.*
+
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions.*
 
 internal class GameWindowTest {
 
@@ -13,6 +14,7 @@ internal class GameWindowTest {
 //    @AfterEach
 //    fun tearDown() {
 //    }
+
 
     @Test
     fun `should return 0`() {
@@ -34,6 +36,8 @@ internal class GameWindowTest {
 
     @Test
     fun checkValueTest() {
+//        val a = Mockito.mock(GameWindow::class.java)
+//        assertEquals(45, a.checkValue(1,1,11,1,1))
 //        val checkValue = GameWindow().checkValue(1,1,1,1,1)
     }
 

@@ -16,23 +16,9 @@ import java.io.InputStreamReader
 import java.util.*
 
 
-/*
-СПИСОК ДЕЛ:
--найти уязвимость в ходе бота
--дизайн
--переворачивание экрана
--помечять выйгравшую пятерку цветом
--показывать лучший счет при создагии activity MainActivity
-
-Тестируемость кода:
-  -функции с return
-  -много функций!
-  -убрать неявные входы и выходы(глобальные переменные)
- */
-
-
 
 class GameWindow : AppCompatActivity() {
+
 
     private var Score = 0
 
@@ -40,7 +26,7 @@ class GameWindow : AppCompatActivity() {
 
     var boardSize = 15
 
-    private var `this` = this
+
 
     private var btnPlayInGame: Button? = null
     private var turn: TextView? = null
@@ -69,19 +55,11 @@ class GameWindow : AppCompatActivity() {
 
     private val drawCell = arrayOfNulls<Drawable>(14)
 
-
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val window = this.window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-//        window.clearFlags(WindowManager.LayoutParams.TYPE_STATUS_BAR)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.GameBarColor)
-        //leaderCount add in bundle (https://www.youtube.com/watch?v=puj9OXs2iPM&list=PLRmiL0mct8WnodKkGLpBN0mfXIbAAX-Ux&index=9)
+        barColorChange()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_window)
-        `this` = this
         setListen()
         loadResources()
         boardSize = getDefaults()
@@ -96,10 +74,17 @@ class GameWindow : AppCompatActivity() {
                 boardSize
             )
         }
-        Log.d("boardsize", "$boardSize")
+        viewText()
         designBoardGame()
-        init_game()
-        play_game()
+        initGame()
+        playGame()
+    }
+
+    fun barColorChange() {
+        val window = this.window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.GameBarColor)
     }
 
 
@@ -117,31 +102,31 @@ class GameWindow : AppCompatActivity() {
     private fun setListen() {
         btnPlayInGame = findViewById(R.id.reloadButton)
         turn = findViewById(R.id.turn)
-        turn!!.text = "Turn:"
+        turn!!.text = "~~~"
 
         btnPlayInGame!!.setOnClickListener {
             xMove = 0
             yMove = 0
             xMove0 = -1
-            init_game()
-            play_game()
+            initGame()
+            playGame()
         }
     }
 
-    private fun init_game() {
+    private fun initGame() {
         firstMove = true
         winnerPlay = 0
 
         for (i in 0 until boardSize) {
             for (j in 0 until boardSize) {
-                ivCell[i][j]!!.setImageDrawable(drawCell[0]) //default or Empty cell
+                ivCell[i][j]!!.setImageDrawable(drawCell[0]) //default
                 valueCell[i][j] = 0
             }
         }
 
     }
 
-    private fun play_game() {
+    private fun playGame() {
         val r = Random()
         turnPlay = r.nextInt(2) + 1
         if (turnPlay == 1) {
@@ -152,16 +137,16 @@ class GameWindow : AppCompatActivity() {
     }
 
     private fun playerTurn() {
-        turn!!.text = "Tern: You"
+        turn!!.text = getString(R.string.YourTern)
         firstMove = false
         isClicked = false
     }
 
     private fun computerTurn() {
-        turn!!.text = "Tern: Computer"
-        if (firstMove) { //center
-            xMove = boardSize / 2 + boardSize % 2
-            yMove = boardSize / 2 + boardSize % 2
+        turn!!.text = getString(R.string.NotYourTern)
+        if (firstMove) { //in center
+            xMove = boardSize / 2
+            yMove = boardSize / 2
             firstMove = false
             makeMove()
         } else {
@@ -178,7 +163,6 @@ class GameWindow : AppCompatActivity() {
     private fun findComputerMove() {
         val listX: MutableList<Int> = ArrayList()
         val listY: MutableList<Int> = ArrayList()
-        //find empty cell can move, and we we only move two cell in range 2
         val range = 2
         for (i in 0 until boardSize) {
             for (j in 0 until boardSize) if (valueCell[i][j] != 0) { //not empty
@@ -196,13 +180,12 @@ class GameWindow : AppCompatActivity() {
         }
         var lx = listX[0]
         var ly = listY[0]
-        //bot always find min board_position_value
         var res = Int.MAX_VALUE - 10
         for (i in listX.indices) {
             val x = listX[i]
             val y = listY[i]
             valueCell[x][y] = 2
-            val rr = value_Position()
+            val rr = valuePosition()
             if (rr < res) {
                 res = rr
                 lx = x
@@ -214,7 +197,7 @@ class GameWindow : AppCompatActivity() {
         yMove = ly
     }
 
-    fun value_Position(): Int {
+    fun valuePosition(): Int {
         var rr = 0
         val pl = turnPlay
         for (i in 0 until boardSize) {
@@ -251,7 +234,7 @@ class GameWindow : AppCompatActivity() {
             if (inBoard(i, j)) {
                 st += valueCell[i][j].toString()
                 if (st.length == 6) {
-                    rr += Eval(st, pl)
+                    rr += eval(st, pl)
                     st = st.substring(1, 6)
                 }
             } else break
@@ -262,11 +245,6 @@ class GameWindow : AppCompatActivity() {
     private fun makeMove() {
         val currentScoreView = findViewById<TextView>(R.id.ScoreDraw)
 
-//        if (!firstMove) {
-//            if (turnPlay == 1) {
-//                ivCell[xMoveLast][yMoveLast]!!.setImageDrawable(drawCell[2])
-//            }
-//        }
         if (turnPlay == 1) {
             ivCell[xMove][yMove]!!.setImageDrawable(drawCell[1])
         } else if (turnPlay == 2 && xMove0 != -1) {
@@ -284,7 +262,7 @@ class GameWindow : AppCompatActivity() {
         } else if (checkWinner()) {
             if (winnerPlay == 1) {
                 val bestScore = viewText().toInt()
-                turn!!.text = "You Win"
+                turn!!.text = getString(R.string.YouWin)
                 Score += 1
                 currentScoreView.text = Score.toString()
                 if (Score > bestScore) {
@@ -293,7 +271,7 @@ class GameWindow : AppCompatActivity() {
             } else {
                 Score = 0
                 currentScoreView.text = Score.toString()
-                turn!!.text = "You Lose"
+                turn!!.text = getString(R.string.YouLose)
 
             }
             lastWinnerPlay = winnerPlay
@@ -353,23 +331,22 @@ class GameWindow : AppCompatActivity() {
         drawCell[9] = ContextCompat.getDrawable(this, R.drawable.corner_cell_2) //background
         drawCell[10] = ContextCompat.getDrawable(this, R.drawable.corner_cell_3) //background
         drawCell[11] = ContextCompat.getDrawable(this, R.drawable.corner_cell_4) //background
-        drawCell[12] = ContextCompat.getDrawable(this, R.drawable.black_player_touch) //for player
-        drawCell[13] = ContextCompat.getDrawable(this, R.drawable.white_player_touch) //for bot
+        drawCell[13] = ContextCompat.getDrawable(this, R.drawable.white_player_touch) //for bot last move
     }
 
     private fun designBoardGame() {
 
         val sizeofCell = (getScreenWidth() / boardSize)
-        val IpRow: LinearLayout.LayoutParams =
+        val lpRow: LinearLayout.LayoutParams =
             LinearLayout.LayoutParams(sizeofCell * boardSize, sizeofCell)
         val lpCell = LinearLayout.LayoutParams(sizeofCell, sizeofCell)
         val linBoardGame = findViewById<View>(R.id.linBoardGame) as LinearLayout
 
         for (i in 0 until boardSize) {
-            val linRow = LinearLayout(`this`)
+            val linRow = LinearLayout(this)
             //make a row
             for (j in 0 until boardSize) {
-                ivCell[i][j] = ImageView(`this`)
+                ivCell[i][j] = ImageView(this)
                 if (i == boardSize - 1 && j in (1..boardSize - 2)) ivCell[i][j]!!.background =
                     drawCell[4]
                 else if (j == boardSize - 1 && i in (1..boardSize - 2)) ivCell[i][j]!!.background =
@@ -401,7 +378,7 @@ class GameWindow : AppCompatActivity() {
                 }
                 linRow.addView(ivCell[i][j], lpCell)
             }
-            linBoardGame.addView(linRow, IpRow)
+            linBoardGame.addView(linRow, lpRow)
         }
     }
 
@@ -425,7 +402,7 @@ class GameWindow : AppCompatActivity() {
         while (true) {
             st += valueCell[i][j].toString()
             if (st.length == 5) {
-                EvalEnd(st)
+                evalEnd(st)
                 st = st.substring(1, 5)
             }
             i += vx
@@ -442,7 +419,7 @@ class GameWindow : AppCompatActivity() {
         return !(i < 0 || i > boardSize - 1 || j < 0 || j > boardSize - 1)
     }
 
-    private fun EvalEnd(st: String) {
+    private fun evalEnd(st: String) {
         when (st) {
             "11111" -> {
                 winnerPlay = 1
@@ -483,12 +460,10 @@ class GameWindow : AppCompatActivity() {
         return line
     }
 
-    fun Eval(st: String, pl: Int): Int {
-        //this function is put score for 6 cells in a row
-        //pl is player turn => you will get a bonus point if it's your turn
-        //I will show you and explain how i can make it and what it mean in part improve bot move
-        var b1 = 1
-        var b2 = 1
+    fun eval(st: String, pl: Int): Int {
+
+        val b1: Int
+        val b2: Int
         if (pl == 1) {
             b1 = 2
             b2 = 1

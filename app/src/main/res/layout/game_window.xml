@@ -60,7 +60,7 @@
         android:layout_height="600dp"
         android:layout_above="@id/turn"
         android:layout_below="@+id/TopInfoMenu"
-        android:layout_marginTop="-1dp"
+
         app:hasClickableChildren="true">
 
         <LinearLayout

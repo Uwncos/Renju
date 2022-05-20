@@ -8,6 +8,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileNotFoundException
@@ -20,12 +21,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        } else {
+            barColorChange()
         }
         super.onCreate(savedInstanceState)
+        val bestScoreView = findViewById<TextView>(R.id.bestScoreDraw0)
         setContentView(R.layout.activity_main)
         openText()
+    }
+
+    fun barColorChange() {
+        val window = this.window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.backgroundMainColorLight)
     }
 
 
@@ -55,14 +66,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun viewText(): String {
-        var line: String
-        if (File("/data/user/0/com.example.renju/files", FILE_NAME).exists()) {
+        val line: String
+        if (!File("/data/user/0/com.example.renju/files", FILE_NAME).exists()) {
             val fileStream = openFileInput(FILE_NAME)
             val read = BufferedReader(InputStreamReader(fileStream))
             line = read.readLine()
         }
         else line = "0"
-        Log.d("FILE:", "$line")
         return line
     }
 }
