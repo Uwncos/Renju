@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
             barColorChange()
         }
         super.onCreate(savedInstanceState)
-        val bestScoreView = findViewById<TextView>(R.id.bestScoreDraw0)
         setContentView(R.layout.activity_main)
         openText()
     }
@@ -65,14 +64,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun viewText(): String {
-        val line: String
-        if (!File("/data/user/0/com.example.renju/files", FILE_NAME).exists()) {
-            val fileStream = openFileInput(FILE_NAME)
-            val read = BufferedReader(InputStreamReader(fileStream))
-            line = read.readLine()
-        }
-        else line = "0"
-        return line
-    }
 }
