@@ -21,13 +21,8 @@ class GameWindow : AppCompatActivity() {
 
 
     private var Score = 0
-
     private val FILE_NAME = "content.txt"
-
     var boardSize = 15
-
-
-
     private var btnPlayInGame: Button? = null
     private var turn: TextView? = null
 
@@ -37,11 +32,12 @@ class GameWindow : AppCompatActivity() {
         )
     }
 
-    private var valueCell = Array(boardSize) {
-        IntArray(
-            boardSize
-        )
-    }
+    private lateinit var valueCell: Array<IntArray>
+//    private var valueCell = Array(boardSize) {
+//        IntArray(
+//            boardSize
+//        )
+//    }
 
     private var winnerPlay = 0
     private var lastWinnerPlay = 0
@@ -50,9 +46,7 @@ class GameWindow : AppCompatActivity() {
     private var yMove = 0
     private var xMove0 = -1
     private var turnPlay = 0
-
     private var isClicked = false
-
     private val drawCell = arrayOfNulls<Drawable>(14)
 
     @Override
@@ -63,7 +57,7 @@ class GameWindow : AppCompatActivity() {
         setListen()
         loadResources()
         boardSize = getDefaults()
-        Log.d("boardSize", "$boardSize")
+//        Log.d("boardSize", "$boardSize")
         valueCell = Array(boardSize) {
             IntArray(
                 boardSize
@@ -80,7 +74,7 @@ class GameWindow : AppCompatActivity() {
         playGame()
     }
 
-    fun barColorChange() {
+    private fun barColorChange() {
         val window = this.window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -88,13 +82,14 @@ class GameWindow : AppCompatActivity() {
     }
 
 
-    fun getDefaults(): Int {
+    private fun getDefaults(): Int {
         val size: Int
         val shared = getSharedPreferences("size_key", MODE_PRIVATE)
-        if (shared == null) {
+        val a = shared.contains("value")
+        if (!a) {
             size = 15
         } else {
-            size = shared.getString("value", "")!!.toInt()
+            size = shared.getString("value", "15")!!.toInt()
         }
         return size
     }
@@ -178,6 +173,7 @@ class GameWindow : AppCompatActivity() {
                 }
             }
         }
+//        Log.d("ListLx", listX[0].toString())
         var lx = listX[0]
         var ly = listY[0]
         var res = Int.MAX_VALUE - 10
@@ -197,10 +193,11 @@ class GameWindow : AppCompatActivity() {
         yMove = ly
     }
 
-    fun valuePosition(): Int {
+    private fun valuePosition(): Int {
         var rr = 0
         val pl = turnPlay
         for (i in 0 until boardSize) {
+//            Log.d("WhileLog", "inPut")
             rr += checkValue(boardSize - 1, i, -1, 0, pl)
         }
         for (i in 0 until boardSize) {
@@ -223,7 +220,7 @@ class GameWindow : AppCompatActivity() {
         return rr
     }
 
-    fun checkValue(xd: Int, yd: Int, vx: Int, vy: Int, pl: Int): Int {
+    private fun checkValue(xd: Int, yd: Int, vx: Int, vy: Int, pl: Int): Int {
         var i: Int = xd
         var j: Int = yd
         var rr = 0
@@ -237,7 +234,9 @@ class GameWindow : AppCompatActivity() {
                     rr += eval(st, pl)
                     st = st.substring(1, 6)
                 }
-            } else break
+            } else {
+                break
+            }
         }
         return rr
     }
@@ -288,7 +287,7 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-    fun checkWinner(): Boolean {
+    private fun checkWinner(): Boolean {
         if (winnerPlay != 0) return true
 
         VectorEnd(xMove, 0, 0, 1, xMove, yMove)
@@ -306,7 +305,7 @@ class GameWindow : AppCompatActivity() {
         return winnerPlay != 0
     }
 
-    fun notEmptyCell(): Boolean {
+    private fun notEmptyCell(): Boolean {
         for (i in 0 until boardSize) {
             for (j in 0 until boardSize) {
                 if (valueCell[i][j] == 0) {
@@ -369,7 +368,7 @@ class GameWindow : AppCompatActivity() {
                             xMove = i
                             yMove = j
                             xMove0 = xMove
-                            Log.d("xy", "$xMove")
+//                            Log.d("xy", "$xMove")
                             makeMove()
 
                         }
@@ -415,7 +414,7 @@ class GameWindow : AppCompatActivity() {
         }
     }
 
-    fun inBoard(i: Int, j: Int): Boolean {
+    private fun inBoard(i: Int, j: Int): Boolean {
         return !(i < 0 || i > boardSize - 1 || j < 0 || j > boardSize - 1)
     }
 
@@ -460,17 +459,22 @@ class GameWindow : AppCompatActivity() {
         return line
     }
 
-    fun eval(st: String, pl: Int): Int {
+//    private fun negaMax()
 
+
+    private fun eval(st: String, pl: Int): Int {
+
+//        Log.d("Player", pl.toString())
         val b1: Int
         val b2: Int
         if (pl == 1) {
             b1 = 2
             b2 = 1
-        } else {
+        } else {  //bot
             b1 = 1
             b2 = 2
         }
+//        Log.d("StLog", st)
         when (st) {
 
 
@@ -478,52 +482,58 @@ class GameWindow : AppCompatActivity() {
             "011111" -> return b1 * 100000000
             "211111" -> return b1 * 100000000
             "111112" -> return b1 * 100000000
+            "011112" -> return b1 * 10000000                //1000 shd less than 111112
+            "211110" -> return b1 * 10000000                //100
             "011110" -> return b1 * 10000000
-            "101110" -> return b1 * 1002                //1002
-            "011101" -> return b1 * 1002                //1002
-            "011112" -> return b1 * 100000                //1000
-            "011100" -> return b1 * 102                //102
-            "001110" -> return b1 * 102                //102
-            "210111" -> return b1 * 100                //100
-            "011011" -> return b1 * 100
-            "110110" -> return b1 * 100
-            "211110" -> return b1 * 1                //100
-            "211011" -> return b1 * 100                //100
-            "211101" -> return b1 * 100                //100
-            "010100" -> return b1 * 10                //10
-            "011000" -> return b1 * 10                //10
-            "001100" -> return b1 * 10                //10
-            "000110" -> return b1 * 10                //10
-            "211000" -> return b1 * 1                //1
-            "201100" -> return b1 * 1                //1
-            "200110" -> return b1 * 1                //1
-            "200011" -> return b1 * 1                //1
+            "110111" -> return b1 * 1000000                //fix 1003  more here
+            "111011" -> return b1 * 1000000                //fix 1003
+            "101110" -> return b1 * 1000000                //1002
+            "011101" -> return b1 * 1000000                //1002
+            "011100" -> return b1 * 10000                //102
+            "001110" -> return b1 * 10000               //102
+            "210111" -> return b1 * 100000                //100
+            "011011" -> return b1 * 100000                //fix
+            "110110" -> return b1 * 100000                //fix
+            "110112" -> return b1 * 100000                //fix
+            "211011" -> return b1 * 100000                //100
+            "211101" -> return b1 * 100000                //100
+            "010100" -> return b1 * 100                //10
+            "011000" -> return b1 * 100                //10
+            "001100" -> return b1 * 100                //10
+            "000110" -> return b1 * 100                //10
+            "211000" -> return b1 * 10                //1
+            "201100" -> return b1 * 10                //1
+            "200110" -> return b1 * 10                //1
+            "200011" -> return b1 * 10                //1  more here
 
 
             "222220" -> return b2 * -100000000
             "022222" -> return b2 * -100000000
             "122222" -> return b2 * -100000000
             "222221" -> return b2 * -100000000
-            "022220" -> return b2 * -10000000
-            "202220" -> return b2 * -1002                //-1002
-            "022202" -> return b2 * -1002                //-1002
-            "022221" -> return b2 * -1000                //-1000
-            "022200" -> return b2 * -102                //-102
-            "002220" -> return b2 * -102                //-102
-            "120222" -> return b2 * -100                //-100
-            "022022" -> return b2 * -100
-            "220220" -> return b2 * -100
-            "122220" -> return b2 * -100                //-100
-            "122022" -> return b2 * -100                //-100
-            "122202" -> return b2 * -100                //-100
-            "020200" -> return b2 * -10                //-10
-            "022000" -> return b2 * -10                //-10
-            "002200" -> return b2 * -10                //-10
-            "000220" -> return b2 * -10                //-10
-            "122000" -> return b2 * -1                //-1
-            "102200" -> return b2 * -1                //-1
-            "100220" -> return b2 * -1                //-1
-            "100022" -> return b2 * -1                //-1
+            "022221" -> return b2 * -1000000                //-1000
+            "122220" -> return b2 * -1000000                //-100
+            "022220" -> return b2 * -1000000
+            "220222" -> return b2 * -100000                //fix
+            "222022" -> return b2 * -100000                //fix
+            "202220" -> return b2 * -100000                //-1002
+            "022202" -> return b2 * -100000                //-1002
+            "022200" -> return b2 * -10000                //-102
+            "002220" -> return b2 * -10000                //-102
+            "120222" -> return b2 * -100000                //-100
+            "022022" -> return b2 * -100000                //fix  -100
+            "220220" -> return b2 * -100000                //fix  -100
+            "220221" -> return b2 * -100000                //fix  -100
+            "122022" -> return b2 * -100000                //-100
+            "122202" -> return b2 * -100000                //-100
+            "020200" -> return b2 * -100                //-10
+            "022000" -> return b2 * -100                //-10
+            "002200" -> return b2 * -100                //-10
+            "000220" -> return b2 * -100                //-10
+            "122000" -> return b2 * -10                //-1
+            "102200" -> return b2 * -10                //-1
+            "100220" -> return b2 * -10                //-1
+            "100022" -> return b2 * -10                //-1
 
             else -> {}
         }

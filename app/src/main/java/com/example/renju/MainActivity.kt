@@ -8,6 +8,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import java.io.BufferedReader
 import java.io.File
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
             barColorChange()
         }
         super.onCreate(savedInstanceState)
+        getMode()
         setContentView(R.layout.activity_main)
         openText()
     }
@@ -61,6 +63,19 @@ class MainActivity : AppCompatActivity() {
 
         } catch (ex: FileNotFoundException) {
             print(ex.message)
+        }
+    }
+
+    private fun getMode() {
+        val mode: Int
+        val sharedMode = getSharedPreferences("theme_mode", MODE_PRIVATE)
+        mode = sharedMode.getInt("mode", -1)
+        if (mode == -1) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        } else if (mode == 1) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
     }
 
