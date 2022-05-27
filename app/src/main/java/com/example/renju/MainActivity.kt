@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         } catch (ex: FileNotFoundException) {
             print(ex.message)
         }
+
     }
 
     private fun getMode() {
